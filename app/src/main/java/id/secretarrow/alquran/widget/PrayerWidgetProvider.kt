@@ -37,7 +37,7 @@ class PrayerWidgetProvider : AppWidgetProvider() {
             val today = LocalDate.now(zone)
             val lat = AdzanScheduler.locationLat(context)
             val lng = AdzanScheduler.locationLng(context)
-            val times = PrayerCalculator.calculate(lat, lng, today, zone)
+            val times = PrayerCalculator.calculate(lat, lng, today)
             val now = System.currentTimeMillis()
 
             val entries =

@@ -31,7 +31,7 @@ object AdzanScheduler {
         val zone = ZoneId.systemDefault()
         val now = LocalDateTime.now(zone)
         val today = LocalDate.now(zone)
-        val times = PrayerCalculator.calculate(locationLat(context), locationLng(context), today, zone)
+        val times = PrayerCalculator.calculate(locationLat(context), locationLng(context), today)
         val map =
             mapOf(
                 PrayerName.IMSAK to times.imsak,

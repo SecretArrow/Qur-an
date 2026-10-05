@@ -73,7 +73,7 @@ fun PrayerScreen(
     val factory =
         remember(container) {
             AppViewModelFactory(container) {
-                PrayerViewModelFactoryProvider(container)
+                PrayerViewModel(container.appContext, container.settingsRepository)
             }
         }
     val viewModel: PrayerViewModel = viewModel(factory = factory)

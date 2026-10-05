@@ -92,8 +92,7 @@ fun AppNavGraph(
                     onBack = { navController.popBackStack() },
                     onOpenSurah = { surah, ayah -> navController.navigate(Routes.reader(surah, ayah)) },
                     onPlaySurah = { reciterId, surah, ayahCount ->
-                        val reciter =
-                            byId(reciterId)
+                        val reciter = ReciterCatalog.byId(reciterId)
                         container.audioPlayerManager.ensureController {
                             container.audioPlayerManager.playSurah(reciter, surah, ayahCount, 1)
                         }
