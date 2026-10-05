@@ -102,7 +102,7 @@ class AudioDownloadManager(
         surah: Int,
         ayahCount: Int
     ) {
-        (1..ayahCount).forEach { ayah ->
+        for (ayah in 1..ayahCount) {
             fileFor(reciter, surah, ayah).delete()
         }
         _state.value = _state.value.copy(lastMessage = "Audio surah $surah dihapus")

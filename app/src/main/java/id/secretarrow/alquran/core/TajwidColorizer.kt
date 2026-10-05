@@ -81,11 +81,13 @@ object TajwidColorizer {
         var j = from
         while (j < chars.size) {
             val cp = chars[j]
-            if (!isMarkCp(cp) && cp != 0x20 && cp != 0x09 && cp != 0x0A) return j
+            if (!isMarkCp(cp) && !isWhitespace(cp)) return j
             j++
         }
         return -1
     }
+
+    private fun isWhitespace(cp: Int): Boolean = cp == 0x20 || cp == 0x09 || cp == 0x0A
 
     /** Akhir rentang base letter (base + harakat yang menyertainya). */
     private fun markEnd(
