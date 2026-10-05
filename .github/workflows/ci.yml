@@ -156,7 +156,7 @@ jobs:
     name: Auto-release APK & AAB
     runs-on: ubuntu-latest
     needs: [quality, e2e]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     timeout-minutes: 30
     env:
       VERSION_CODE: ${{ github.run_number }}
