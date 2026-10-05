@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import id.secretarrow.alquran.R
+import id.secretarrow.alquran.data.model.PrayerName
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId

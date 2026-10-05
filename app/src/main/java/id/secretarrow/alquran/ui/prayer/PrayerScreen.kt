@@ -358,7 +358,9 @@ fun PrayerCalendarScreen(
 ) {
     val factory =
         remember(container) {
-            AppViewModelFactory(container) { PrayerViewModelFactoryProvider(container) }
+            AppViewModelFactory(container) {
+                PrayerViewModel(container.appContext, container.settingsRepository)
+            }
         }
     val viewModel: PrayerViewModel = viewModel(factory = factory)
     val state by viewModel.state.collectAsState()

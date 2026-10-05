@@ -14,11 +14,14 @@ import id.secretarrow.alquran.di.AppContainer
 import id.secretarrow.alquran.ui.menu.MenuScreen
 import id.secretarrow.alquran.ui.prayer.PrayerCalendarScreen
 import id.secretarrow.alquran.ui.prayer.PrayerScreen
+import id.secretarrow.alquran.ui.prayer.PrayerViewModel
+import id.secretarrow.alquran.ui.prayer.PrayerViewModelFactoryProvider
 import id.secretarrow.alquran.ui.qibla.QiblaScreen
 import id.secretarrow.alquran.ui.reader.ReaderScreen
 import id.secretarrow.alquran.ui.search.SearchScreen
 import id.secretarrow.alquran.ui.settings.SettingsScreen
 import id.secretarrow.alquran.ui.surahlist.SurahListScreen
+import id.secretarrow.alquran.ui.theme.AlQuranTheme
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -55,7 +58,7 @@ fun AppNavGraph(
         container.surahNameCache
     }.collectAsState()
 
-    id.secretarrow.alquran.ui.theme.AlQuranTheme(darkMode = darkMode) {
+    AlQuranTheme(darkMode = darkMode) {
         NavHost(
             navController = navController,
             startDestination = Routes.HOME
@@ -90,8 +93,7 @@ fun AppNavGraph(
                     onOpenSurah = { surah, ayah -> navController.navigate(Routes.reader(surah, ayah)) },
                     onPlaySurah = { reciterId, surah, ayahCount ->
                         val reciter =
-                            id.secretarrow.alquran.data.local.ReciterCatalog
-                                .byId(reciterId)
+                            byId(reciterId)
                         container.audioPlayerManager.ensureController {
                             container.audioPlayerManager.playSurah(reciter, surah, ayahCount, 1)
                         }
@@ -136,11 +138,9 @@ fun AppNavGraph(
                 )
             }
             composable(Routes.QIBLA) {
-                val vm: id.secretarrow.alquran.ui.prayer.PrayerViewModel =
+                val vm: PrayerViewModel =
                     viewModel(
-                        factory =
-                            id.secretarrow.alquran.ui.prayer
-                                .PrayerViewModelFactoryProvider(container)
+                        factory = PrayerViewModelFactoryProvider(container)
                     )
                 val state by vm.state.collectAsState()
                 QiblaScreen(

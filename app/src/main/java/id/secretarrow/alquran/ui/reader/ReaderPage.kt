@@ -45,10 +45,12 @@ import androidx.compose.ui.unit.sp
 import id.secretarrow.alquran.core.ArabicUtils
 import id.secretarrow.alquran.core.TajwidColorizer
 import id.secretarrow.alquran.data.model.AyahDisplay
+import id.secretarrow.alquran.data.model.RasmStyle.INDOPAK
 import id.secretarrow.alquran.ui.components.OrnamentHeader
 import id.secretarrow.alquran.ui.components.StarBadge
 import id.secretarrow.alquran.ui.theme.AmberTajwid
 import id.secretarrow.alquran.ui.theme.AmiriQuranFamily
+import id.secretarrow.alquran.ui.theme.Gold
 import id.secretarrow.alquran.ui.theme.GreenTajwid
 import id.secretarrow.alquran.ui.theme.GreenTajwidSoft
 import id.secretarrow.alquran.ui.theme.NotoNaskhFamily
@@ -108,7 +110,7 @@ fun ReaderPage(
                     text = BASMALAH,
                     fontFamily =
                         if (state.rasm ==
-                            id.secretarrow.alquran.data.model.RasmStyle.INDOPAK
+                            INDOPAK
                         ) {
                             NotoNaskhFamily
                         } else {
@@ -197,7 +199,7 @@ private fun AyahRow(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 val arabicFont =
-                    if (state.rasm == id.secretarrow.alquran.data.model.RasmStyle.INDOPAK) {
+                    if (state.rasm == INDOPAK) {
                         NotoNaskhFamily
                     } else {
                         AmiriQuranFamily
@@ -258,13 +260,13 @@ private fun AyahRow(
                 Icon(
                     Icons.Filled.Bookmark,
                     contentDescription = "Sudah dibookmark",
-                    tint = id.secretarrow.alquran.ui.theme.Gold,
+                    tint = Gold,
                     modifier = Modifier.size(14.dp)
                 )
                 Text(
                     text = "  Dibookmark",
                     fontSize = 11.sp,
-                    color = id.secretarrow.alquran.ui.theme.Gold
+                    color = Gold
                 )
             }
         }

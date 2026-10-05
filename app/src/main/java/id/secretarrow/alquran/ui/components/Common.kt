@@ -39,7 +39,7 @@ class OctagramShape(
 ) : Shape {
     override fun createOutline(
         size: androidx.compose.ui.geometry.Size,
-        layoutDirection: androidx.compose.ui.graphics.LayoutDirection,
+        layoutDirection: androidx.compose.ui.unit.LayoutDirection,
         density: androidx.compose.ui.unit.Density
     ): Outline {
         val cx = size.width / 2f

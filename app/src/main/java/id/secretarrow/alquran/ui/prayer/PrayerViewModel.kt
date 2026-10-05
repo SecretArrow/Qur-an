@@ -4,10 +4,20 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import id.secretarrow.alquran.core.HijriHelper.format
+import id.secretarrow.alquran.core.HijriHelper.formatGregorian
 import id.secretarrow.alquran.core.LocationProvider
 import id.secretarrow.alquran.data.model.AdzanToggles
+import id.secretarrow.alquran.data.model.PrayerName.ASHAR
+import id.secretarrow.alquran.data.model.PrayerName.DZUHUR
+import id.secretarrow.alquran.data.model.PrayerName.IMSAK
+import id.secretarrow.alquran.data.model.PrayerName.ISYA
+import id.secretarrow.alquran.data.model.PrayerName.MAGHRIB
+import id.secretarrow.alquran.data.model.PrayerName.SUBUH
+import id.secretarrow.alquran.data.model.PrayerName.TERBIT
 import id.secretarrow.alquran.data.model.PrayerTimesOfDay
 import id.secretarrow.alquran.data.repo.SettingsRepository
+import id.secretarrow.alquran.di.AppContainer
 import id.secretarrow.alquran.prayer.AdzanScheduler
 import id.secretarrow.alquran.prayer.IndonesianCities
 import id.secretarrow.alquran.prayer.IndonesianCity
@@ -71,11 +81,9 @@ class PrayerViewModel(
                     loading = false,
                     date = today,
                     hijri =
-                        id.secretarrow.alquran.core.HijriHelper
-                            .format(today, settingsRepository.current().hijriOffset),
+                        format(today, settingsRepository.current().hijriOffset),
                     gregorian =
-                        id.secretarrow.alquran.core.HijriHelper
-                            .formatGregorian(today),
+                        formatGregorian(today),
                     times = times,
                     lat = lat,
                     lng = lng,
@@ -87,7 +95,7 @@ class PrayerViewModel(
         }
     }
 
-    private fun resolveLocation(): Triple<Double, Double, String> {
+    private suspend fun resolveLocation(): Triple<Double, Double, String> {
         val settings = settingsRepository.current()
         return if (settings.useGps) {
             val location = LocationProvider.lastKnown(appContext)
@@ -151,13 +159,13 @@ class PrayerViewModel(
     private fun persistAndSchedule(toggles: AdzanToggles) {
         val active =
             buildSet {
-                if (toggles.imsak) add(id.secretarrow.alquran.data.model.PrayerName.IMSAK)
-                if (toggles.subuh) add(id.secretarrow.alquran.data.model.PrayerName.SUBUH)
-                if (toggles.terbit) add(id.secretarrow.alquran.data.model.PrayerName.TERBIT)
-                if (toggles.dzuhur) add(id.secretarrow.alquran.data.model.PrayerName.DZUHUR)
-                if (toggles.ashar) add(id.secretarrow.alquran.data.model.PrayerName.ASHAR)
-                if (toggles.maghrib) add(id.secretarrow.alquran.data.model.PrayerName.MAGHRIB)
-                if (toggles.isya) add(id.secretarrow.alquran.data.model.PrayerName.ISYA)
+                if (toggles.imsak) add(IMSAK)
+                if (toggles.subuh) add(SUBUH)
+                if (toggles.terbit) add(TERBIT)
+                if (toggles.dzuhur) add(DZUHUR)
+                if (toggles.ashar) add(ASHAR)
+                if (toggles.maghrib) add(MAGHRIB)
+                if (toggles.isya) add(ISYA)
             }
         appContext
             .getSharedPreferences("adzan_toggles", Context.MODE_PRIVATE)
@@ -189,7 +197,7 @@ class PrayerViewModel(
 
     class Factory(
         private val context: Context,
-        private val container: id.secretarrow.alquran.di.AppContainer
+        private val container: AppContainer
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T = PrayerViewModel(context, container.settingsRepository) as T

@@ -59,6 +59,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import id.secretarrow.alquran.data.local.ReciterCatalog.reciters
+import id.secretarrow.alquran.data.model.RepeatMode
+import id.secretarrow.alquran.data.model.RepeatMode.ALL
+import id.secretarrow.alquran.data.model.RepeatMode.OFF
+import id.secretarrow.alquran.data.model.RepeatMode.ONE
 import id.secretarrow.alquran.di.AppContainer
 import id.secretarrow.alquran.ui.components.LogoBadge
 import id.secretarrow.alquran.ui.navigation.AppViewModelFactory
@@ -384,7 +389,7 @@ private fun PagerStrip(
 @Composable
 private fun AudioBar(
     isPlaying: Boolean,
-    repeatLabel: id.secretarrow.alquran.data.model.RepeatMode,
+    repeatLabel: RepeatMode,
     onToggleRepeat: () -> Unit,
     onPrevious: () -> Unit,
     onPlayPause: () -> Unit,
@@ -402,11 +407,11 @@ private fun AudioBar(
     ) {
         IconButton(onClick = onToggleRepeat) {
             when (repeatLabel) {
-                id.secretarrow.alquran.data.model.RepeatMode.ONE ->
+                ONE ->
                     Icon(Icons.Filled.RepeatOne, contentDescription = "Ulang satu ayat", tint = Teal)
-                id.secretarrow.alquran.data.model.RepeatMode.ALL ->
+                ALL ->
                     Icon(Icons.Filled.Repeat, contentDescription = "Ulang semua", tint = Teal)
-                id.secretarrow.alquran.data.model.RepeatMode.OFF ->
+                OFF ->
                     Icon(Icons.Filled.Repeat, contentDescription = "Ulang mati", tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -436,7 +441,7 @@ private fun ReciterDialog(
     onSelect: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val reciters = id.secretarrow.alquran.data.local.ReciterCatalog.reciters
+    val reciters = reciters
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},

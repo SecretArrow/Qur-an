@@ -4,6 +4,7 @@ import com.batoulapps.adhan.CalculationParameters
 import com.batoulapps.adhan.Coordinates
 import com.batoulapps.adhan.PrayerTimes
 import com.batoulapps.adhan.Qibla
+import com.batoulapps.adhan.data.DateComponents
 import id.secretarrow.alquran.data.model.PrayerTimesOfDay
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,9 +29,9 @@ object PrayerCalculator {
         zone: ZoneId = ZoneId.systemDefault()
     ): PrayerTimesOfDay {
         val coords = Coordinates(latitude, longitude)
-        val dayStart = date.atStartOfDay(zone).toInstant()
         val params = kemenagParameters()
-        val times = PrayerTimes(coords, Date.from(dayStart), params)
+        val dateComponents = DateComponents(date.year, date.monthValue, date.dayOfMonth)
+        val times = PrayerTimes(coords, dateComponents, params)
         val toMillis = { d: Date? -> d?.time ?: 0L }
         val subuh = times.fajr?.time ?: 0L
         val imsak = subuh - 10 * 60_000L
