@@ -13,11 +13,22 @@ class TajwidColorizerTest {
 
     @Test
     fun `nun sukun sebelum huruf ikhfa diwarnai merah`() {
-        // مِنْ بَعْدِ -> nun sukun + ba (ikhfa)
-        val text = "مِنْ بَعْدِ"
+        // مِنْ تَحْتِهِ -> nun sukun + ta (huruf ikhfa)
+        val text = "مِنْ تَحْتِهِ"
         val ranges = TajwidColorizer.analyze(text)
         val ikhfa = ranges.filter { it.rule == TajwidColorizer.Rule.IKHFA }
         assertTrue("harus ada aturan ikhfa, dapat: $ranges", ikhfa.isNotEmpty())
+    }
+
+    @Test
+    fun `nun sukun sebelum ba adalah iqlab`() {
+        // مِنْ بَعْدِ -> nun sukun + ba (iqlab)
+        val text = "مِنْ بَعْدِ"
+        val ranges = TajwidColorizer.analyze(text)
+        assertTrue(
+            "harus ada iqlab, dapat: $ranges",
+            ranges.any { it.rule == TajwidColorizer.Rule.IQLAB }
+        )
     }
 
     @Test

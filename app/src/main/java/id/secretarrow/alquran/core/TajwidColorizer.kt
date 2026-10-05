@@ -63,11 +63,23 @@ object TajwidColorizer {
     private fun hasTanweenBefore(
         chars: IntArray,
         i: Int
+    ): Boolean = hasMarkBefore(chars, i) { isTanween(it) }
+
+    /** Apakah base letter sebelum [i] membawa tanda iqlab (U+06E2, meem kecil di atas). */
+    private fun hasIqlabSignBefore(
+        chars: IntArray,
+        i: Int
+    ): Boolean = hasMarkBefore(chars, i) { it == 0x06E2 }
+
+    private inline fun hasMarkBefore(
+        chars: IntArray,
+        i: Int,
+        predicate: (Int) -> Boolean
     ): Boolean {
         var j = i - 1
         var found = false
         while (j >= 0 && isMarkCp(chars[j])) {
-            if (isTanween(chars[j])) found = true
+            if (predicate(chars[j])) found = true
             j--
         }
         return found
@@ -115,7 +127,7 @@ object TajwidColorizer {
         i: Int,
         ranges: MutableList<Range>
     ) {
-        val triggers = isNunSukun(chars, i) || hasTanweenBefore(chars, i)
+        val triggers = isNunSukun(chars, i) || hasTanweenBefore(chars, i) || hasIqlabSignBefore(chars, i)
         if (!triggers) return
         val nextBase = nextBaseIndex(chars, i + 1)
         if (nextBase == -1) return
