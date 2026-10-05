@@ -1,0 +1,65 @@
+build:
+  maxIssues: 0
+
+complexity:
+  CyclomaticComplexMethod:
+    active: false
+  LongMethod:
+    active: false
+  LongParameterList:
+    active: false
+  TooManyFunctions:
+    active: false
+  LargeClass:
+    active: false
+
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    active: false
+  VariableNaming:
+    active: false
+
+style:
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 140
+  ReturnCount:
+    active: false
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated: ['Preview']
+  UnusedImports:
+    active: true
+  WildcardImport:
+    active: false
+  DestructuringDeclarationWithTooManyEntries:
+    active: false
+  VarCouldBeVal:
+    active: true
+  LoopWithTooManyJumpStatements:
+    active: false
+  ThrowsCount:
+    active: false
+  UtilityClassWithPublicConstructor:
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+  SwallowedException:
+    active: false
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: false
+
+empty-blocks:
+  EmptyFunctionBlock:
+    active: false
+
+performance:
+  SpreadOperator:
+    active: false

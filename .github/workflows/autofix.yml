@@ -1,0 +1,47 @@
+name: Auto-fix
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *' # harian 02:00 UTC
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autofix
+  cancel-in-progress: false
+
+jobs:
+  autofix:
+    name: ktlint format + kirim commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install ktlint
+        run: |
+          curl -sSL -o /usr/local/bin/ktlint https://github.com/pinterest/ktlint/releases/download/1.5.0/ktlint
+          chmod +x /usr/local/bin/ktlint
+
+      - name: Format
+        run: |
+          ktlint --format "app/src/**/*.kt" "app/src/**/*.kts" "*.kts" || true
+
+      - name: Commit & push
+        run: |
+          if git diff --quiet; then
+            echo "Tidak ada perubahan format"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "[autofix] ktlint format otomatis"
+          git push origin main
+          gh workflow run ci.yml --ref main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

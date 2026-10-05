@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AlQuranIndonesia.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/green_dark_deep</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.AlQuranIndonesia</item>
+    </style>
+
+    <style name="Theme.AlQuranIndonesia" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/green_dark_deep</item>
+        <item name="android:navigationBarColor">@color/green_dark_deep</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- bintang oktagon emas -->
+    <path
+        android:fillColor="#C9B38C"
+        android:pathData="M54,22 L60.2,34.2 L72,28 L68.6,41.4 L82,44 L73,54 L82,64 L68.6,66.6 L72,80 L60.2,73.8 L54,86 L47.8,73.8 L36,80 L39.4,66.6 L26,64 L35,54 L26,44 L39.4,41.4 L36,28 L47.8,34.2 Z" />
+    <!-- buku terbuka teal -->
+    <path
+        android:fillColor="#009688"
+        android:pathData="M54,48 C58,44 64,42.5 70,43 L70,62 C64,61.5 58,63 54,66 C50,63 44,61.5 38,62 L38,43 C44,42.5 50,44 54,48 Z
+M52,52 L52,62 C48.6,60.2 44.5,59.4 40.5,59.6 L40.5,45.6 C44.6,45.5 49,46.8 52,49.6 Z
+M56,52 L56,62 C59.4,60.2 63.5,59.4 67.5,59.6 L67.5,45.6 C63.4,45.5 59,46.8 56,49.6 Z" />
+</vector>
