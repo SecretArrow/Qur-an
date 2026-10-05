@@ -127,16 +127,16 @@ class PrayerCalculatorTest {
     fun `waktu subuh dan isya wajar untuk Jakarta`() {
         val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26))
         assertTrue("subuh harus sekitar 04:30-05:10", times.subuh > 0)
-        val java =
+        val subuhTime =
             java.time.Instant
                 .ofEpochMilli(times.subuh)
                 .atZone(zone)
-        assertTrue("jam subuh 3-6, dapat ${java.hour}:${java.minute}", java.hour in 3..5)
-        val isya =
+        assertTrue("jam subuh 3-6, dapat $subuhTime", subuhTime.hour in 3..5)
+        val isyaTime =
             java.time.Instant
                 .ofEpochMilli(times.isya)
                 .atZone(zone)
-        assertTrue("jam isya 18-20, dapat ${isya.hour}:${isya.minute}", isya.hour in 18..20)
+        assertTrue("jam isya 18-20, dapat $isyaTime", isyaTime.hour in 18..20)
     }
 
     @Test
