@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import id.secretarrow.alquran.data.local.ReciterCatalog
 import id.secretarrow.alquran.data.model.ThemeMode
 import id.secretarrow.alquran.di.AppContainer
 import id.secretarrow.alquran.ui.menu.MenuScreen
