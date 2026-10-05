@@ -369,7 +369,7 @@ fun PrayerCalendarScreen(
 
     val rows =
         remember(state.lat, state.lng, state.date) {
-            PrayerCalculator.calculateRange(state.lat, state.lng, state.date, 30, zone)
+            PrayerCalculator.calculateRange(state.lat, state.lng, state.date, 30)
         }
 
     Scaffold(

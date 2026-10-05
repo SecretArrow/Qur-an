@@ -25,8 +25,7 @@ object PrayerCalculator {
     fun calculate(
         latitude: Double,
         longitude: Double,
-        date: LocalDate,
-        zone: ZoneId = ZoneId.systemDefault()
+        date: LocalDate
     ): PrayerTimesOfDay {
         val coords = Coordinates(latitude, longitude)
         val params = kemenagParameters()
@@ -51,12 +50,11 @@ object PrayerCalculator {
         latitude: Double,
         longitude: Double,
         start: LocalDate,
-        days: Int,
-        zone: ZoneId = ZoneId.systemDefault()
+        days: Int
     ): List<Pair<LocalDate, PrayerTimesOfDay>> =
         (0 until days)
             .map { start.plusDays(it.toLong()) }
-            .map { it to calculate(latitude, longitude, it, zone) }
+            .map { it to calculate(latitude, longitude, it) }
 
     /** Sudut kiblat via pustaka Adhan. */
     fun qiblaDirection(

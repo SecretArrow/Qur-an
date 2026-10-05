@@ -125,7 +125,7 @@ class PrayerCalculatorTest {
 
     @Test
     fun `waktu subuh dan isya wajar untuk Jakarta`() {
-        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26), zone)
+        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26))
         assertTrue("subuh harus sekitar 04:30-05:10", times.subuh > 0)
         val java =
             java.time.Instant
@@ -141,13 +141,13 @@ class PrayerCalculatorTest {
 
     @Test
     fun `imsak adalah subuh dikurangi 10 menit`() {
-        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26), zone)
+        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26))
         assertEquals(times.subuh - 10 * 60_000L, times.imsak)
     }
 
     @Test
     fun `formatTime menghasilkan HH mm`() {
-        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26), zone)
+        val times = PrayerCalculator.calculate(-6.2088, 106.8456, LocalDate.of(2022, 3, 26))
         val formatted = PrayerCalculator.formatTime(times.dzuhur, zone)
         assertTrue(Regex("^\\d{2}:\\d{2}$").matches(formatted))
     }

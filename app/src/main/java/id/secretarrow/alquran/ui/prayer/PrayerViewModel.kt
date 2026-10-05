@@ -75,7 +75,7 @@ class PrayerViewModel(
             val (lat, lng, label) = resolveLocation()
             val zone = ZoneId.systemDefault()
             val today = LocalDate.now(zone)
-            val times = PrayerCalculator.calculate(lat, lng, today, zone)
+            val times = PrayerCalculator.calculate(lat, lng, today)
             _state.value =
                 s.copy(
                     loading = false,
