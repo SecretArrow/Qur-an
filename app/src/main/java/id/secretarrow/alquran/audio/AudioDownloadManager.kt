@@ -71,7 +71,7 @@ class AudioDownloadManager(
             _state.value = _state.value.copy(lastMessage = "Audio surah $surah sudah lengkap terunduh")
             return
         }
-        targets.forEach { ayah ->
+        for (ayah in targets) {
             scope.launch {
                 _state.value = _state.value.copy(activeCount = _state.value.activeCount + 1)
                 val ok =

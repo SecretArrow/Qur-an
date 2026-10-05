@@ -17,9 +17,12 @@ naming:
   FunctionNaming:
     active: true
     ignoreAnnotated: ['Composable']
+    functionPattern: '^(`.*`|[a-z][a-zA-Z0-9]*)$'
   TopLevelPropertyNaming:
     active: false
   VariableNaming:
+    active: false
+  MatchingDeclarationName:
     active: false
 
 style:

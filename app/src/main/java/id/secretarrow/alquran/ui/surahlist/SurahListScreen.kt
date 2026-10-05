@@ -78,8 +78,7 @@ fun SurahListScreen(
     onToggleTheme: () -> Unit,
     onBack: () -> Unit,
     onOpenSurah: (Int, Int) -> Unit,
-    onPlaySurah: (Int, Int, Int) -> Unit,
-    onAbout: () -> Unit
+    onPlaySurah: (Int, Int, Int) -> Unit
 ) {
     val factory =
         remember(

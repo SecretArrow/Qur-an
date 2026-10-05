@@ -118,7 +118,6 @@ class QuranRepository(
         val surahStart = surahs.associateBy({ it.number }, { it.startAyahGlobal })
         val surahEnd = surahs.associateBy({ it.number }, { it.startAyahGlobal + it.ayahCount - 1 })
         return juzStarts.mapIndexed { idx, (s, a) ->
-            val startGlobal = surahStart.getValue(s) + a - 1
             val nextStart =
                 if (idx + 1 < juzStarts.size) {
                     val (ns, na) = juzStarts[idx + 1]

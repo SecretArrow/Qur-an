@@ -13,14 +13,13 @@ object TajwidColorizer {
         val rule: Rule
     )
 
-    // U+064B..U+0652: tanween fath, dam, kasr, syadda, sukun
     private fun isSukun(cp: Int): Boolean = cp == 0x0652 || cp == 0x06E1 || cp == 0x065C
 
     private fun isFathah(cp: Int): Boolean = cp == 0x064E
 
     private fun isTanween(cp: Int): Boolean = cp in 0x064B..0x064D
 
-    private fun isNunLetter(cp: Int): Boolean = cp == 0x0646 // ن
+    private fun isMarkCp(cp: Int): Boolean = cp in 0x064B..0x065F || cp in 0x06D6..0x06ED || cp == 0x0670
 
     private fun isBaLetter(cp: Int): Boolean = cp == 0x0628 // ب
 
@@ -45,113 +44,126 @@ object TajwidColorizer {
         set: IntArray
     ): Boolean = set.any { it == cp }
 
+    /** Apakah base letter di [i] adalah nun (ن) dengan sukun. */
+    private fun isNunSukun(
+        chars: IntArray,
+        i: Int
+    ): Boolean {
+        if (chars[i] != 0x0646) return false
+        var j = i + 1
+        var found = false
+        while (j < chars.size && isMarkCp(chars[j])) {
+            if (isSukun(chars[j])) found = true
+            j++
+        }
+        return found
+    }
+
+    /** Apakah base letter sebelum [i] membawa tanween. */
+    private fun hasTanweenBefore(
+        chars: IntArray,
+        i: Int
+    ): Boolean {
+        var j = i - 1
+        var found = false
+        while (j >= 0 && isMarkCp(chars[j])) {
+            if (isTanween(chars[j])) found = true
+            j--
+        }
+        return found
+    }
+
+    /** Indeks base letter pertama mulai [from]; -1 bila tidak ada. */
+    private fun nextBaseIndex(
+        chars: IntArray,
+        from: Int
+    ): Int {
+        var j = from
+        while (j < chars.size) {
+            val cp = chars[j]
+            if (!isMarkCp(cp) && cp != 0x20 && cp != 0x09 && cp != 0x0A) return j
+            j++
+        }
+        return -1
+    }
+
+    /** Akhir rentang base letter (base + harakat yang menyertainya). */
+    private fun markEnd(
+        chars: IntArray,
+        base: Int
+    ): Int {
+        var j = base + 1
+        while (j < chars.size && isMarkCp(chars[j])) j++
+        return j
+    }
+
+    /** Tentukan aturan berdasar huruf berikutnya setelah nun sukun / tanween. */
+    private fun ruleAfterNun(next: Int): Rule? =
+        when {
+            inSet(next, idghamBigSet) -> Rule.IDGHAM_BIGHUNNAH
+            inSet(next, idghamSmallSet) -> Rule.IDGHAM_BILAGHUNNAH
+            isBaLetter(next) -> Rule.IQLAB
+            inSet(next, ikhfaSet) -> Rule.IKHFA
+            inSet(next, izharSet) -> Rule.IZHAR
+            else -> null
+        }
+
+    private fun analyzeNunRules(
+        chars: IntArray,
+        i: Int,
+        ranges: MutableList<Range>
+    ) {
+        val triggers = isNunSukun(chars, i) || hasTanweenBefore(chars, i)
+        if (!triggers) return
+        val nextBase = nextBaseIndex(chars, i + 1)
+        if (nextBase == -1) return
+        val rule = ruleAfterNun(chars[nextBase]) ?: return
+        ranges.add(Range(i, markEnd(chars, nextBase), rule))
+    }
+
+    private fun analyzeQalqalah(
+        chars: IntArray,
+        i: Int,
+        ranges: MutableList<Range>
+    ) {
+        if (!inSet(chars[i], qalqalahSet)) return
+        var j = i + 1
+        var found = false
+        while (j < chars.size && isMarkCp(chars[j])) {
+            if (isSukun(chars[j])) found = true
+            j++
+        }
+        if (found) ranges.add(Range(i, j, Rule.QALQALAH))
+    }
+
+    private fun analyzeMad(
+        chars: IntArray,
+        i: Int,
+        ranges: MutableList<Range>
+    ) {
+        var j = i + 1
+        var hadFathah = false
+        while (j < chars.size && isMarkCp(chars[j])) {
+            if (isFathah(chars[j])) hadFathah = true
+            j++
+        }
+        if (hadFathah && j < chars.size && chars[j] == 0x0627) {
+            ranges.add(Range(i, j + 1, Rule.MAD))
+        }
+    }
+
     /**
-     * Analisis teks Arab (Uthmani) dan kembalikan rentang karakter [start, end) yang berlaku
-     * untuk tiap aturan tajwid. Rentang meng-cover base letter + harakatnya.
+     * Analisis teks Arab (Uthmani) dan kembalikan rentang karakter [start, end)
+     * untuk tiap aturan tajwid yang berlaku.
      */
     fun analyze(text: String): List<Range> {
         val ranges = mutableListOf<Range>()
         val chars = text.codePoints().toArray()
-        val n = chars.size
-        var i = 0
-
-        // indeks base letter (bukan harakat) berikut
-        fun nextBaseIndex(from: Int): Int {
-            var j = from
-            while (j < n) {
-                val cp = chars[j]
-                val isMark = cp in 0x064B..0x065F || cp in 0x06D6..0x06ED || cp == 0x0670
-                if (!isMark && cp != 0x20 && cp != 0x09 && cp != 0x0A) return j
-                j++
-            }
-            return -1
-        }
-
-        fun baseEnd(from: Int): Int {
-            var j = from + 1
-            while (j < n) {
-                val cp = chars[j]
-                val isMark = cp in 0x064B..0x065F || cp in 0x06D6..0x06ED || cp == 0x0670
-                if (!isMark) return j
-                j++
-            }
-            return j
-        }
-
-        while (i < n) {
-            val cp = chars[i]
-
-            // Aturan nun sukun / tanween pada base sebelumnya
-            val isNunSukun =
-                isNunLetter(cp) &&
-                    run {
-                        var j = i + 1
-                        var hasSukun = false
-                        while (j < n && isMarkCp(chars[j])) {
-                            if (isSukun(chars[j])) hasSukun = true
-                            j++
-                        }
-                        hasSukun
-                    }
-            val prevMarked =
-                i > 0 &&
-                    run {
-                        // tanween pada base sebelumnya, atau nunsukun
-                        var j = i - 1
-                        var hasTanween = false
-                        while (j >= 0 && isMarkCp(chars[j])) {
-                            if (isTanween(chars[j])) hasTanween = true
-                            j--
-                        }
-                        hasTanween
-                    }
-
-            if (isNunSukun || prevMarked) {
-                val nextBase = nextBaseIndex(i + 1)
-                if (nextBase != -1) {
-                    val next = chars[nextBase]
-                    val end = baseEnd(nextBase)
-                    val rule =
-                        when {
-                            inSet(next, idghamBigSet) -> Rule.IDGHAM_BIGHUNNAH
-                            inSet(next, idghamSmallSet) -> Rule.IDGHAM_BILAGHUNNAH
-                            isBaLetter(next) -> Rule.IQLAB
-                            inSet(next, ikhfaSet) -> Rule.IKHFA
-                            inSet(next, izharSet) -> Rule.IZHAR
-                            else -> null
-                        }
-                    if (rule != null) ranges.add(Range(i, end, rule))
-                }
-            }
-
-            // Qalqalah: base qalqalah + sukun
-            if (inSet(cp, qalqalahSet)) {
-                var j = i + 1
-                var hasSukun = false
-                while (j < n && isMarkCp(chars[j])) {
-                    if (isSukun(chars[j])) hasSukun = true
-                    j++
-                }
-                if (hasSukun) ranges.add(Range(i, j, Rule.QALQALAH))
-            }
-
-            // Mad thabi'i: fathah diikuti alef
-            if (i + 1 < n) {
-                var j = i + 1
-                var hadFathah = false
-                while (j < n && isMarkCp(chars[j])) {
-                    if (isFathah(chars[j])) hadFathah = true
-                    j++
-                }
-                if (hadFathah && j < n && chars[j] == 0x0627) {
-                    ranges.add(Range(i, j + 1, Rule.MAD))
-                }
-            }
-
-            i++
+        for (i in chars.indices) {
+            analyzeNunRules(chars, i, ranges)
+            analyzeQalqalah(chars, i, ranges)
+            analyzeMad(chars, i, ranges)
         }
         return ranges
     }
-
-    private fun isMarkCp(cp: Int): Boolean = cp in 0x064B..0x065F || cp in 0x06D6..0x06ED || cp == 0x0670
 }

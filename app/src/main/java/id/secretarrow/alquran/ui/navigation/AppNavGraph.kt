@@ -96,8 +96,7 @@ fun AppNavGraph(
                             container.audioPlayerManager.playSurah(reciter, surah, ayahCount, 1)
                         }
                         navController.navigate(Routes.reader(surah, 1))
-                    },
-                    onAbout = { }
+                    }
                 )
             }
             composable(Routes.READER) { entry ->
